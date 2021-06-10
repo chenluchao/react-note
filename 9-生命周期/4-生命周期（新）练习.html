@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>react生命周期(新)</title>
+  <!-- react核心库 -->
+  <script src="../js/react.development.js"></script>
+  <!-- react扩展库支持react操作DOM -->
+  <script src="../js/react-dom.development.js"></script>
+  <!-- 1.ES6转ES5；2.jsx转js -->
+  <script src="../js/babel.min.js"></script>
+  <!-- prop操作 -->
+  <script src="../js/prop-types.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .box {
+      margin: 0 auto;
+      width: 200px;
+      height: 150px;
+      border: 1px solid #ddd;
+      overflow: auto;
+    }
+
+    li {
+      line-height: 30px;
+      text-indent: 2em;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="test"></div>
+  <script type="text/babel">
+    class List extends React.Component {
+      state = {
+        list: ['新闻7', '新闻6', '新闻5', '新闻4', '新闻3', '新闻2', '新闻1']
+      }
+      componentDidMount() {
+        setInterval(() => {
+          const list = this.state.list
+          const AddNew = '新闻' + parseInt(this.state.list.length + 1)
+          this.setState({
+            list: [AddNew, ...list]
+          })
+        }, 1000)
+      }
+      getSnapshotBeforeUpdate(){
+        //改返回值会作为componentDidUpdate的第三个参数
+        return this.refs.list.scrollHeight//更新前的列表个度
+      }
+      componentDidUpdate(preProps,PreState,height){
+        this.refs.list.scrollTop += this.refs.list.scrollHeight - height
+      }
+      render() {
+        return (
+          <div className="box" ref='list'>
+            <ul>
+              {
+                this.state.list.map((item, index) => {
+                  return (<li key={index}>{item}</li>)
+                })
+              }
+            </ul>
+          </div>
+        )
+      }
+    }
+    ReactDOM.render(<List />, document.getElementById('test'))
+  </script>
+</body>
+
+</html>

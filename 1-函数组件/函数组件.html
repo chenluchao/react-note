@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>函数组件</title>
+  <!-- react核心库 -->
+  <script src="../js/react.development.js"></script>
+  <!-- react扩展库支持react操作DOM -->
+  <script src="../js/react-dom.development.js"></script>
+  <!-- 1.ES6转ES5；2.jsx转js -->
+  <script src="../js/babel.min.js"></script>
+</head>
+<body>
+  <div id="test"></div>
+  <script type="text/babel">
+    // 组件是代码和资源的集合html,css,js
+    // 1.创建函数式组件
+    function Demo(){
+      console.log(this)
+      //this undefined=>babel翻译后开启严格模式严格模式禁止自定义函数中This指向window所以这里this为undefined
+      return (
+          <h1>函数组件（适用于简单组件）</h1>
+      )
+    }
+    // 2、渲染DOM
+    // 注意要用Demo标签，首字母大写
+    ReactDOM.render(<Demo />,document.getElementById('test'))
+    /*
+      执行了REactDOM.render()后
+      1、解析标签找到Demo组件
+      2、发现组件是函数定义随后调用该函数将返回的DOM转为真实DOM
+    */
+  </script>
+</body>
+</html>

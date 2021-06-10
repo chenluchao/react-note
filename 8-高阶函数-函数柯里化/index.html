@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>高阶函数/函数柯里化</title>
+  <!-- react核心库 -->
+  <script src="../js/react.development.js"></script>
+  <!-- react扩展库支持react操作DOM -->
+  <script src="../js/react-dom.development.js"></script>
+  <!-- 1.ES6转ES5；2.jsx转js -->
+  <script src="../js/babel.min.js"></script>
+  <!-- prop操作 -->
+  <script src="../js/prop-types.js"></script>
+  <style>
+    p {
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="test"></div>
+  <script type="text/babel">
+    class Login extends React.Component {
+      state = {
+        username: '',
+        password: ''
+      }
+
+      /* 
+        高阶函数满足一下一个即可
+          1、若a函数，接收的参数是一个函数，那么a是高阶函数
+          2、若a函数，调用的返回值仍旧是一个函数，那么a是高阶函数
+          常见高阶函数为：Promise，定时器，arr.map..数组上的
+        函数柯里化 通过函数调用继续返回函数的方式，实现多次接收参数最后统一处理的函数编码形式
+      */
+      //  高阶函数saveFormData
+      saveFormData = (dataType) => {
+        return (event) => {
+          this.setState({
+            [dataType]:event.target.value
+          })
+        }
+      }
+      handleSubmit = (event) => {
+        event.preventDefault()
+        alert(`用户名：${this.state.username}，密码：${this.state.password}`)
+      }
+      render() {
+        return (
+          <form action="http://baidu.com" onSubmit={this.handleSubmit}>
+            <p>账户：<input type="text" onChange={this.saveFormData('username')} placeholder='账户名' name='username' /></p>
+            <p>密码：<input type="text" onChange={this.saveFormData('password')} placeholder='密码' name='password' /></p>
+            <p><button>登录</button></p>
+          </form>
+        )
+      }
+    }
+    ReactDOM.render(<Login />, document.getElementById('test'))
+  </script>
+</body>
+
+</html>

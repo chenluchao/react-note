@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>react生命周期(新)</title>
+  <!-- react核心库 -->
+  <script src="../js/react.development.js"></script>
+  <!-- react扩展库支持react操作DOM -->
+  <script src="../js/react-dom.development.js"></script>
+  <!-- 1.ES6转ES5；2.jsx转js -->
+  <script src="../js/babel.min.js"></script>
+  <!-- prop操作 -->
+  <script src="../js/prop-types.js"></script>
+</head>
+
+<body>
+  <div id="test"></div>
+  <script type="text/babel">
+    class Count extends React.Component {
+      // 构造器
+      constructor(props) {
+        super(props)
+        console.log('count---constructor')
+        // 初始化状态
+        this.state = {
+          count: 1
+        }
+      }
+      // 加1按钮回调
+      add = () => {
+        const { count } = this.state
+        this.setState({
+          count: count + 1
+        })
+      }
+      // 强制更新按钮回调
+      force = () => {
+        this.forceUpdate()
+      }
+      // 卸载按钮回调
+      death = () => {
+        ReactDOM.unmountComponentAtNode(document.getElementById('test'))
+      }
+      // （新）获取派生状态从props
+      static getDerivedStateFromProps(props, state) {
+        console.log('getDerivedStateFromProps', props, state)
+        return null
+        /* 
+          返回值将做为state
+          1、返回null不影响；
+          2、若返回state对象则作为state对象。其他修改state的操作都将无效；此时state的值仅与props有关
+        */
+      }
+      // 挂载完成
+      componentDidMount() {
+        console.log('count---componentDidMount')
+      }
+      // 卸载组件
+      componentWillUnmount() {
+        console.log('count---componentWillUnmount')
+      }
+      // 是否更新
+      shouldComponentUpdate() {
+        console.log('count---shouldComponentUpdate')
+        return true
+      }
+      // （新）更新前获取快照-获取的是更新前的prop以及更新前的state
+      getSnapshotBeforeUpdate(PrevProps, PrevState) {
+        console.log('getSnapshotBeforeUpdate', PrevProps, PrevState)
+        return 'height'//该返回值会作为componentDidUpdate的第三个参数
+      }
+      // 组件更新完成
+      componentDidUpdate(preProps, PreState, height) {
+        // 三个参数分别为更新前的props/更新前的state/getSnapshotBeforeUpdate(获取快照)的返回值
+        console.log('count---componentDidUpdate', preProps, PreState, height)
+      }
+      // 渲染
+      render() {
+        console.log('count---render')
+        return (
+          <div>
+            <h2>当前和为{this.state.count}</h2>
+            <button onClick={this.add}>点击+1</button>
+            <button onClick={this.death}>卸载组件</button>
+            <button onClick={this.force}>强制更新</button>
+          </div>
+        )
+      }
+    }
+
+    ReactDOM.render(<Count name='张三' />, document.getElementById('test'))
+  </script>
+</body>
+
+</html>

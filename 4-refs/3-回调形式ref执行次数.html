@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>回调形式ref执行次数</title>
+  <!-- react核心库 -->
+  <script src="../js/react.development.js"></script>
+  <!-- react扩展库支持react操作DOM -->
+  <script src="../js/react-dom.development.js"></script>
+  <!-- 1.ES6转ES5；2.jsx转js -->
+  <script src="../js/babel.min.js"></script>
+  <!-- prop操作 -->
+  <script src="../js/prop-types.js"></script>
+</head>
+
+<body>
+  <div id="test"></div>
+  <script type="text/babel">
+    class Demo extends React.Component {
+      state = {
+        isHot: false
+      }
+      // 展示左侧输入框数据
+      showData = () => {
+        console.log(this)
+        alert(this.input1.value)
+      }
+      change = () => {
+        this.setState({
+          isHost: !this.state.isHost
+        })
+      }
+      saveInput=(c)=>{
+        this.input1 = c.value
+        console.log('@',c)
+      }
+      render() {
+        // 回调形式声明ref
+        // 内联形式ref会在更新过程中会执行两次第一次传入null第二次传入DOM，更新过程会先清空在创建
+        // 可以用类绑定回调解决
+        return (
+          // currentNode当前DOM节点;this=render的this(实例)
+          <div>
+            <h1>今天天气很{this.state.isHost ? '炎热' : '凉爽'}</h1>
+            {/*<input ref={(c)=>{this.input1=c;console.log('@',c);}} type="text" placehold='点击按钮提示信息' />*/}
+            {/* 类绑定回调方式 */}
+            <input ref={this.saveInput} type="text" placehold='点击按钮提示信息' />
+            <button onClick={this.showData}>点我提示</button>
+            <button onClick={this.change}>切换天气</button>
+          </div>
+        )
+      }
+    }
+    ReactDOM.render(<Demo />, document.getElementById('test'))
+  </script>
+</body>
+
+</html>

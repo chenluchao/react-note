@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>字符串形式ref</title>
+  <!-- react核心库 -->
+  <script src="../js/react.development.js"></script>
+  <!-- react扩展库支持react操作DOM -->
+  <script src="../js/react-dom.development.js"></script>
+  <!-- 1.ES6转ES5；2.jsx转js -->
+  <script src="../js/babel.min.js"></script>
+  <!-- prop操作 -->
+  <script src="../js/prop-types.js"></script>
+</head>
+<body>
+  <div id="test"></div>
+  <script type="text/babel">
+    /* 
+      字符串类型ref已经不推荐了（过时）存在一些问题可能在未来版本移除
+        存在效率上的问题效率不高
+    */
+    class Demo extends React.Component{
+      // 展示左侧输入框数据
+      showData = ()=>{
+        alert(this.refs.input1.value)
+      }
+      // 展示右侧输入框数据
+      showData2 = ()=>{
+        alert(this.refs.input2.value)
+      }
+      render(){
+        return (
+          <div>
+            <input ref='input1' type="text" placehold='点击按钮提示信息' />
+            <button onClick={this.showData}>点我提示</button>
+            <input ref='input2' onBlur={this.showData2} type="text" placehold='失焦提示信息' />
+          </div>
+        )
+      }
+    }
+    ReactDOM.render(<Demo />,document.getElementById('test'))
+  </script>
+</body>
+</html>

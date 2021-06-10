@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>react_study</title>
+  <!-- react核心库 -->
+  <script src="../js/react.development.js"></script>
+  <!-- react扩展库支持react操作DOM -->
+  <script src="../js/react-dom.development.js"></script>
+  <!-- 1.ES6转ES5；2.jsx转js -->
+  <script src="../js/babel.min.js"></script>
+  <!-- prop操作 -->
+  <script src="../js/prop-types.js"></script>
+  <!--  -->
+  <script src="../js/pubsub-js.js"></script>
+  <style>
+    .app {
+      width: 300px;
+      height: 300px;
+      margin: 50px auto;
+      border: 1px solid #ddd;
+      box-sizing: border-box;
+      padding: 0 20px;
+    }
+
+    .app div {
+      margin: 10px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="test"></div>
+  <script type="text/babel">
+    /* 
+      pubsub-js库实现订阅可以实现组件间传值
+      【1】安装`yarn add pubsub-js`
+      【2】使用
+          1、在接受信息的组件内订阅消息及收到订阅的回调回调中处理消息名及收到数据
+          2、在其他组件可以发布消息指定发布的消息名及传递的数据
+      【3】例子
+          1、订阅组件（获取消息的组件）：
+              `this.token = PubSub.subscribe('MY_TOPIC',mySubscribe)`
+              mySubscribe=(msg,data)=>{}  //收到订阅的处理回调
+              msg——消息名；data——获取的发布数据
+          2、发布消息组件：
+              `PubSub.publish('MY_TOPIC','hello world')`
+          3、取消订阅
+              `PubSub.unsubscribe(this.token)`
+     */
+    class App extends React.Component {
+      render() {
+        return (
+          <div className='app'>
+            <Header />
+            <List />
+          </div>
+        )
+      }
+    }
+    // Header组件发布消息的组件
+    class Header extends React.Component {
+      dealChange = (event) => {
+        if (event.target.value.trim() == '' || event.keyCode !== 13) return
+        const item = {
+          id: Math.random() * 10,
+          title: event.target.value
+        }
+        // 发布消息
+        PubSub.publish('MyMessage', item)
+        event.target.value = ''
+      }
+      render() {
+        return (
+          <div>
+            <input type="text" onKeyUp={this.dealChange} placeholder='请输入事项，回车添加' />
+          </div>
+        )
+      }
+    }
+    // List组件接受订阅消息的组件
+    class List extends React.Component {
+      state = {
+        list: [
+          { id: 1, title: '吃饭' },
+          { id: 2, title: '睡觉' },
+          { id: 3, title: '敲代码' },
+        ]
+      }
+      componentDidMount() {
+        // 订阅消息指定订阅消息名及收到订阅消息的处理回调方法
+        // 写法1：
+        // this.token = PubSub.subscribe('MyMessage', this.messageCallback)
+        // 写法2：
+        PubSub.subscribe('MyMessage', (msg, data) => {
+          console.log('收到订阅消息', msg, data)
+          const { list } = this.state
+          this.setState({
+            list: [data, ...list]
+          })
+        })
+      }
+      // 收到订阅消息的处理回调方法
+      messageCallback = (msg, data) => {
+        console.log(msg, data)
+        this.setState({
+          list: [data, ...this.state.list]
+        })
+      }
+      componentWillUnmount() {
+        // 取消订阅
+        PubSub.unsubscribe(this.token)
+      }
+      render() {
+        return (
+          <div>
+            {
+              this.state.list.map(item => {
+                return (
+                  <div key={item.id}>{item.title}</div>
+                )
+              })
+            }
+          </div>
+        )
+      }
+    }
+    ReactDOM.render(<App />, document.getElementById('test'))
+  </script>
+</body>
+
+</html>

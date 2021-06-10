@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>回调形式ref</title>
+  <!-- react核心库 -->
+  <script src="../js/react.development.js"></script>
+  <!-- react扩展库支持react操作DOM -->
+  <script src="../js/react-dom.development.js"></script>
+  <!-- 1.ES6转ES5；2.jsx转js -->
+  <script src="../js/babel.min.js"></script>
+  <!-- prop操作 -->
+  <script src="../js/prop-types.js"></script>
+</head>
+
+<body>
+  <div id="test"></div>
+  <script type="text/babel">
+    class Demo extends React.Component {
+      // 展示左侧输入框数据
+      showData = () => {
+        console.log(this)
+        alert(this.input1.value)
+      }
+      showBlure = (elem) => {
+        console.log(elem.target.value)
+      }
+      render() {
+        // 回调形式声明ref
+        return (
+          // currentNode当前DOM节点;this=render的this(实例)
+          <div>
+            <input ref={(currentNode) => { this.input1 = currentNode }} type="text" placeholder='点击按钮提示信息' />
+            <button onClick={this.showData}>点我提示</button>
+            <input onBlur={this.showBlure} type="text" placeholder='失去焦点提示信息' />
+          </div>
+        )
+      }
+    }
+    ReactDOM.render(<Demo />, document.getElementById('test'))
+  </script>
+</body>
+
+</html>

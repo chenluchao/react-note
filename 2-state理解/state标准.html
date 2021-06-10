@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>state(状态)标准</title>
+  <!-- react核心库 -->
+  <script src="../js/react.development.js"></script>
+  <!-- react扩展库支持react操作DOM -->
+  <script src="../js/react-dom.development.js"></script>
+  <!-- 1.ES6转ES5；2.jsx转js -->
+  <script src="../js/babel.min.js"></script>
+</head>
+
+<body>
+  <!-- 组件实例的三大核心属性之一：state -->
+  <div id="test"></div>
+  <script type="text/babel">
+    // 状态是组件实例对象上的
+    class Weather extends React.Component {
+      // constructor(构造器)调用1次初始化状态解决this指向问题
+      constructor(props) {
+        super(props)
+        this.state = {
+          isHot: true,
+          love: true
+        }
+        // bind()方法返回新方法
+        // 解决changeWeather中this指向问题
+        this.changeWeather = this.change.bind(this)
+        this.changeLove = this.changeLove.bind(this)
+      }
+      // change点几次调几次
+      change() {
+        // 放在原型对象上共实例使用
+        // 状态必须通过setState修改此操作为合并操作不是替换操作
+      // 对象式setState
+        // this.setState({
+        //   isHot: !this.state.isHot
+        // })
+      // 函数式setState
+        // this.setState((state) => {
+        //   return {
+        //     isHot: !state.isHot
+        //   }
+        // })
+      // 函数式setState简写
+        this.setState(state => ({ isHot: !state.isHot }))
+      }
+      changeLove() {
+        this.setState({
+          love: !this.state.love
+        })
+      }
+      // constructor调用1+n次1:初始化-n:状态修改n次
+      render() {
+        return (
+          <div>
+            <h1 onClick={this.changeWeather} >今天天气{this.state.isHot ? '炎热' : '寒冷'}</h1>
+            <h2 onClick={this.changeLove}>{this.state.love ? '喜欢' : '不喜欢'}</h2>
+          </div>
+        )
+      }
+    }
+    ReactDOM.render(<Weather />, document.getElementById('test'))
+  </script>
+</body>
+
+</html>

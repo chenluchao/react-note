@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>diff算法</title>
+  <!-- react核心库 -->
+  <script src="../js/react.development.js"></script>
+  <!-- react扩展库支持react操作DOM -->
+  <script src="../js/react-dom.development.js"></script>
+  <!-- 1.ES6转ES5；2.jsx转js -->
+  <script src="../js/babel.min.js"></script>
+  <!-- prop操作 -->
+  <script src="../js/prop-types.js"></script>
+</head>
+
+<body>
+  <div id="test"></div>
+  <script type="text/babel">
+    class Persons extends React.Component {
+      state = {
+        list: [
+          { id: 1, name: '张三', age: 18 },
+          { id: 2, name: '李四', age: 19 }
+        ]
+      }
+      add = () => {
+        const list = this.state.list
+        const AddPerson = { id: 3, name: '王五', age: 20 }
+        this.setState({
+          list: [AddPerson, ...list]
+        })
+      }
+      render() {
+        return (
+          <div>
+            <h3>key为index</h3>
+            <ul>
+              {
+                this.state.list.map((personObj, index) => {
+                  return (<li key={index}>{personObj.name}----{personObj.age} <input type='text' /></li>)
+                })
+              }
+            </ul>
+            <h3>key为id</h3>
+            <ul>
+              {
+                this.state.list.map((personObj, index) => {
+                  return (<li key={personObj.id}>{personObj.name}----{personObj.age} <input type='text' /></li>)
+                })
+              }
+            </ul>
+            <button onClick={this.add}>添加王五</button>
+          </div>
+        )
+      }
+    }
+    ReactDOM.render(<Persons />, document.getElementById('test'))
+    /* 
+      1、虚拟DOM中key的作用：
+          1）简单说：key是虚拟DOM对象的标识，在更新显示时key起着极其重要的作用。
+          2）详细的说：当状态中的数据发生改变时，react会根据【新数据】生成的【新的虚拟DOM】，
+                       随后React进行【新虚拟DOM】与【旧虚拟DOM】的diff比较，比较规则如下：
+                a. 旧虚拟DOM中找到了与新虚拟DOM相同的key：
+                    （1）若虚拟DOM中内容没变，直接使用之前的真实DOM
+                    （2）若虚拟DOM中内容变了，则生成新的真实DOM，随后替换页面中之前的真实DOM
+                b. 旧虚拟DOM中未找到与新虚拟DOM相同的key
+                    根据数据创建新的真实DOM，随后渲染到页面
+      2、用index做key可能引发的问题：
+          1. 若对数据进行：逆序添加、逆序删除等破坏顺序的操作：
+                会产生没有必要的真实DOM更新 ==> 界面效果没有问题，但是效率低
+          2. 如果结构中还包含输入类的DOM:
+                会产生错误DOM更新 ==> 界面问题。
+          3. 注意！如果不存在对数据的逆序添加、逆序删除等破坏顺序的操作。
+             仅用于渲染列表用于展示，使用index作为key是没有问题的。
+      3、开发中如何选择key
+          1.最好使用每条数据唯一的标识作为key，比如id,手机号，身份证号，学号等唯一标识；
+          2.如果确定只是简单的展示数据，用index也是可以的。
+     */
+  </script>
+</body>
+
+</html>

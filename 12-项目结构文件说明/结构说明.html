@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>react项目结构说明</title>
+</head>
+<body>
+  <script>
+    // spa应用 —— 单页面应用
+    
+    /* 
+      public文件夹
+          1、index.html中：
+              header中：
+                  <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" type="image/x-icon">
+                      %PUBLIC_URL% 代表public目录的路径
+                  <meta name='theme-color' content="red">
+                      用于配置浏览器页签+地址栏的颜色（仅支持安卓手机浏览器且有兼容问题）
+                  <link rel="apple-touch-icon" href="favicon.png">
+                      用于指定苹果手机添加到主屏幕后的显示图片
+                  <link rel="manifest" href="manifest.json">
+                      应用加壳将web加壳成为安卓或ios应用在manifest.json中配置信息logo等
+          2、robots.txt:爬虫规则文件
+    */
+    /* 
+      src文件夹
+        1、index.css —— 统一样式
+        2、index.js  —— 入口文件
+            外部包裹React.StrictMode标签 —— 写法检查
+        3、reactWebVitals —— 记录页面性能
+        4、setupTests.js ———— 做组件测试用jest-dom插件
+     */
+  </script>
+</body>
+</html>

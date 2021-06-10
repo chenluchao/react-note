@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>props标准</title>
+  <!-- react核心库 -->
+  <script src="../js/react.development.js"></script>
+  <!-- react扩展库支持react操作DOM -->
+  <script src="../js/react-dom.development.js"></script>
+  <!-- 1.ES6转ES5；2.jsx转js -->
+  <script src="../js/babel.min.js"></script>
+  <!-- prop操作 -->
+  <script src="../js/prop-types.js"></script>
+</head>
+
+<body>
+  <div id="test"></div>
+  <script type="text/babel">
+    class Person extends React.Component {
+      render() {
+        return (
+          <ul>
+            <li>姓名：{this.props.name}</li>
+            <li>性别：{this.props.sex}</li>
+            <li>年龄：{this.props.age}</li>
+          </ul>
+        )
+      }
+    }
+    Person.propTypes={
+      name:PropTypes.string.isRequired,
+      age:PropTypes.number
+    }
+    Person.defaultProps={
+      age:0
+    }
+    let p = { name: '张三', sex: '男' }
+    ReactDOM.render(<Person {...p} />, document.getElementById('test'))
+  </script>
+</body>
+
+</html>

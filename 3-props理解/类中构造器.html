@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>类构造器</title>
+  <!-- react核心库 -->
+  <script src="../js/react.development.js"></script>
+  <!-- react扩展库支持react操作DOM -->
+  <script src="../js/react-dom.development.js"></script>
+  <!-- 1.ES6转ES5；2.jsx转js -->
+  <script src="../js/babel.min.js"></script>
+  <!-- prop操作 -->
+  <script src="../js/prop-types.js"></script>
+</head>
+
+<body>
+  <div id="test"></div>
+  <script type="text/babel">
+    class Person extends React.Component {
+      // 类中构造器可以省略不写，但是若写则必须接props并且传给super函数
+      // 构造器是否接收props是否传给super取决于是否在构造器中通过this访问props(很少用)
+      constructor(props){
+        super(props)
+        console.log('constructor',this.props)
+      }
+      static propsType = {
+        name:PropTypes.string.isRequired,
+        age:PropTypes.number
+      }
+      static defaultProps = {
+        age:18,
+        sex:'男'
+      }
+      render() {
+        return (
+          <ul>
+            <li>姓名：{this.props.name}</li>
+            <li>性别：{this.props.sex}</li>
+            <li>年龄：{this.props.age}</li>
+          </ul>
+        )
+      }
+    }
+    ReactDOM.render(<Person name='张三' />, document.getElementById('test'))
+  </script>
+</body>
+
+</html>

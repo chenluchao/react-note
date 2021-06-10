@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>待办列表</title>
+  <!-- react核心库 -->
+  <script src="../js/react.development.js"></script>
+  <!-- react扩展库支持react操作DOM -->
+  <script src="../js/react-dom.development.js"></script>
+  <!-- 1.ES6转ES5；2.jsx转js -->
+  <script src="../js/babel.min.js"></script>
+  <!-- prop操作 -->
+  <script src="../js/prop-types.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    button {
+      background-color: red;
+      color: #fff;
+      outline: none;
+      border: none;
+      cursor: pointer;
+      padding: 5px 10px;
+      border-radius: 5px;
+    }
+
+    .app {
+      width: 500px;
+      overflow: hidden;
+      margin: 50px auto;
+      box-sizing: border-box;
+      border: 1px solid #ddd;
+    }
+
+    .app h2 {
+      line-height: 40px;
+      color: #03ccbb;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .header {
+      width: 100%;
+      height: 50px;
+      box-sizing: border-box;
+      padding: 5px 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .header input {
+      height: 30px;
+      width: 100%;
+    }
+
+    .list {
+      width: 100%;
+      height: 300px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .item {
+      width: 100%;
+      height: 40px;
+      line-height: 40px;
+      box-sizing: border-box;
+      padding: 0 10px;
+      border-bottom: 1px dashed #aaa;
+    }
+
+    .item input {
+      margin-right: 5px;
+    }
+
+    .item button {
+      float: right;
+      margin-top: 5px;
+    }
+
+    .item span {
+      font-size: 18px;
+    }
+
+    .footer {
+      height: 50px;
+      box-sizing: border-box;
+      padding: 0 10px;
+      line-height: 50px;
+    }
+
+    .footer button {
+      float: right;
+      margin-top: 10px;
+    }
+
+    .footer span {
+      margin-left: 5px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="test"></div>
+  <script type="text/babel">
+    // App组件
+    class App extends React.Component {
+      // ************************数据在哪里操作数据的方法就在哪里******************************
+      state = {
+        // 待办事项列表数据
+        todos: [
+          { id: 1, title: '起床', done: true },
+          { id: 2, title: '洗刷', done: true },
+          { id: 3, title: '去上班', done: true },
+          { id: 4, title: '工作', done: false },
+          { id: 5, title: '吃饭', done: false },
+        ]
+      }
+      // 添加一个待办事项
+      addThing = (todo) => {
+        const { todos } = this.state
+        this.setState({
+          todos: [todo, ...todos]
+        })
+      }
+      // item选择框点击事件
+      handleClick = (todo, flag) => {
+        const { todos } = this.state
+        const newTodos = todos.map(item => {
+          if (item.id === todo.id) return { ...item, done: flag }
+          else return item
+        })
+        this.setState({
+          todos: newTodos
+        })
+      }
+      // 删除一个事项
+      deleteTodo = (todo) => {
+        const { todos } = this.state
+        const newTodos = todos.filter(item => {
+          return item.id !== todo.id
+        })
+        this.setState({
+          todos: newTodos
+        })
+      }
+      // 删除所有已完成
+      deleteAllDone = () => {
+        const { todos } = this.state
+        const newTodos = todos.filter(item => {
+          return !item.done
+        })
+        this.setState({
+          todos: newTodos
+        })
+      }
+      // 全选按钮点击
+      toggleCheckAll = (flag) => {
+        const { todos } = this.state
+        const newTodos = todos.map(item => {
+          return { ...item, done: flag }
+        })
+        this.setState({
+          todos: newTodos
+        })
+      }
+      render() {
+        const { todos } = this.state
+        return (
+          <div className='app'>
+            <h2>TodoList</h2>
+            <Header add={this.addThing} />
+            <List todos={todos} handleClick={this.handleClick} deleteTodo={this.deleteTodo} />
+            <Footer deleteAllDone={this.deleteAllDone} todos={todos} toggleCheckAll={this.toggleCheckAll} />
+          </div>
+        )
+      }
+    }
+
+    // Header组件
+    class Header extends React.Component {
+      addThing = (event) => {
+        if (event.target.value.trim() == '' || event.keyCode !== 13) return
+        const item = {
+          id: Math.random() * 10,
+          title: event.target.value,
+          done: false
+        }
+        this.props.add(item)
+        event.target.value = ''
+      }
+      render() {
+        return (
+          <div className='header'>
+            <input type="text" placeholder='请输入待办事项，回车录入列表' onKeyUp={this.addThing} />
+          </div>
+        )
+      }
+    }
+
+    // List组件
+    class List extends React.Component {
+      render() {
+        const { todos, handleClick, deleteTodo } = this.props
+        return (
+          <div className='list'>
+            {
+              todos.map(todo => {
+                return (
+                  <Item key={todo.id} todo={todo} handleClick={handleClick} deleteTodo={deleteTodo} />
+                )
+              })
+            }
+          </div>
+        )
+      }
+    }
+
+    // Item组件
+    class Item extends React.Component {
+      state = {
+        mouse: false
+      }
+      // 鼠标移入移出效果
+      mouse = (flag) => {
+        return () => {
+          this.setState({
+            mouse: flag
+          })
+        }
+      }
+      // 点击选择框事件
+      handleClick = (todo, event) => {
+        this.props.handleClick(todo, event.target.checked)
+      }
+      // 删除一个事项
+      deleteTodo = (todo) => {
+        return () => {
+          this.props.deleteTodo(todo)
+        }
+      }
+      render() {
+        const { mouse } = this.state
+        const { todo } = this.props
+        return (
+          <div className='item' onMouseEnter={this.mouse(true)} onMouseLeave={this.mouse(false)} style={{ background: mouse ? '#ddd' : '' }}>
+            <input type="checkbox" checked={todo.done} onChange={(ele) => { this.handleClick(todo, ele) }} />
+            {todo.done}
+            <span>{todo.title}</span>
+            <button onClick={this.deleteTodo(todo)} style={{ display: mouse ? '' : 'none' }}>删除</button>
+          </div>
+        )
+      }
+    }
+
+    // footer
+    class Footer extends React.Component {
+      deleteAllDone = () => {
+        this.props.deleteAllDone()
+      }
+      // 全选按钮点击
+      toggleCheckAll = (event) => {
+        this.props.toggleCheckAll(event.target.checked)
+      }
+      render() {
+        const { todos } = this.props
+        const doneNum = todos.reduce((pre, todo) => {
+          return pre + (todo.done ? 1 : 0)
+        }, 0)
+        return (
+          <div className='footer'>
+            <input type="checkbox" checked={doneNum === todos.length && todos.length > 0 ? true : false} onChange={this.toggleCheckAll} />
+            <span>已完成{doneNum}/全部{todos.length}</span>
+            <button onClick={this.deleteAllDone}>删除全部已完成事项</button>
+          </div>
+        )
+      }
+    }
+
+    // 渲染到页面
+    ReactDOM.render(<App />, document.getElementById('test'))
+  </script>
+</body>
+
+</html>
